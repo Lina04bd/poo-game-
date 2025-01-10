@@ -1,0 +1,113 @@
+package Game;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        
+
+        // Création des personnages
+        Personnage guerrier = new Guerrier("Guerrier Thor");
+        Personnage mage = new Mage("Mage Floki");
+        Personnage voleur = new Voleur("Voleur Loki");
+        Personnage joueur;
+        Personnage adversaire1;
+        Personnage adversaire2;
+
+        // Choix du personnage par le joueur
+        System.out.println("Choisissez votre personnage :");
+        System.out.println("1. Guerrier Thor");
+        System.out.println("2. Mage Floki");
+        System.out.println("3. Voleur Loki");
+
+        int choix = scanner.nextInt();
+        switch (choix) {
+            case 1:
+                joueur = guerrier;
+                adversaire1 = mage;
+                adversaire2 = voleur;
+                break;
+            case 2:
+                joueur = mage;
+                adversaire1 = guerrier;
+                adversaire2 = voleur;
+                break;
+            case 3:
+                joueur = voleur;
+                adversaire1 = guerrier;
+                adversaire2 = mage;
+                break;
+            default:
+                System.out.println("Choix invalide. Le guerrier est sélectionné par défaut.");
+                joueur = guerrier;
+                adversaire1 = mage;
+                adversaire2 = voleur;
+        }
+
+        // Boucle principale du combat
+        while (joueur.estVivant() && (adversaire1.estVivant() || adversaire2.estVivant())) {
+            System.out.println("\n--- Tour de combat ---");
+            System.out.println(joueur.getNom() + " contre ses adversaires");
+
+            // Tour du joueur
+            System.out.println("Choisissez une action :");
+            System.out.println("1. Attaquer un adversaire");
+            System.out.println("2. Utiliser compétence spéciale");
+
+            int action = scanner.nextInt();
+            System.out.println("Choisissez votre cible :");
+            if (adversaire1.estVivant()) System.out.println("1. " + adversaire1.getNom());
+            if (adversaire2.estVivant()) System.out.println("2. " + adversaire2.getNom());
+
+            int cible = scanner.nextInt();
+            Personnage adversaire = null;
+
+            if (cible == 1 && adversaire1.estVivant()) {
+                adversaire = adversaire1;
+            } else if (cible == 2 && adversaire2.estVivant()) {
+                adversaire = adversaire2;
+            } else {
+                System.out.println("Cible invalide ou déjà vaincue.");
+            }
+
+            if (adversaire != null) {
+                if (action == 1) {
+                    joueur.attaquer(adversaire);
+                } else if (action == 2) {
+                    joueur.utiliserCompetence(adversaire);
+                } else {
+                    System.out.println("Action invalide. Vous perdez votre tour.");
+                }
+            }
+
+            // Tour des adversaires
+            if (adversaire1.estVivant()) {
+                System.out.println("C'est au tour de " + adversaire1.getNom() + " !");
+                adversaire1.attaquer(joueur);
+            }
+            if (adversaire2.estVivant()) {
+                System.out.println("C'est au tour de " + adversaire2.getNom() + " !");
+                adversaire2.attaquer(joueur);
+            }
+
+            // Vérifier si le joueur est toujours vivant
+            if (!joueur.estVivant()) {
+                System.out.println(joueur.getNom() + " a été vaincu !");
+                break;
+            }
+        }
+
+        scanner.close();
+
+        // Fin du jeu
+        if (joueur.estVivant()) {
+            System.out.println("Félicitations, " + joueur.getNom() + "! Vous avez vaincu vos adversaires et remporté la gloire.");
+        } else {
+            System.out.println("Game Over ! Vous avez été vaincu.");
+        }
+
+        System.out.println("Le combat est terminé !");
+    }
+}
